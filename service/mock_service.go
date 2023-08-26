@@ -62,8 +62,6 @@ func (s *MockService) Start() {
 	}()
 }
 
-func (s *MockService) Stop() {
-	if err := s.srv.Shutdown(context.Background()); err != nil {
-		log.Println("Error when shutting down mock HTTP server", err)
-	}
+func (s *MockService) Stop() error {
+	return s.srv.Shutdown(context.Background())
 }

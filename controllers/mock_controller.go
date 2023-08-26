@@ -49,3 +49,7 @@ func RegisterMockController(e *echo.Echo, prefix string) *MockController {
 
 	return c
 }
+
+func (c *MockController) Stop() error {
+	return c.mockService.Stop()
+}
