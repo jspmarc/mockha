@@ -1,4 +1,4 @@
-package utils
+package constants
 
 type HttpMethod string
 

@@ -2,13 +2,14 @@ package model
 
 import (
 	"database/sql"
-	"github.com/josep/mockha/utils"
+	"github.com/jmoiron/sqlx"
+	"github.com/josep/mockha/constants"
 )
 
 type HttpMock struct {
 	Group  sql.NullString
 	Path   string
-	Method utils.HttpMethod
+	Method constants.HttpMethod
 
 	RequestHeader          sql.NullByte   `db:"request_header" json:"request_header"`
 	RequestBody            sql.NullString `db:"request_body" json:"request_body"`
@@ -18,4 +19,6 @@ type HttpMock struct {
 	ResponseBody             sql.NullString `db:"response_body" json:"response_body"`
 	ResponseBodyContentType  sql.NullString `db:"response_body_content_type" json:"response_body_content_type"`
 	ResponseCode             uint16         `db:"response_code" json:"response_code"`
+
+	db *sqlx.DB
 }

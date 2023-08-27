@@ -1,9 +1,12 @@
 package main
 
 import (
+	"github.com/jmoiron/sqlx"
 	"github.com/josep/mockha/controllers"
+	"github.com/josep/mockha/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
 	"os/signal"
@@ -25,6 +28,16 @@ func interruptHandler(mockController *controllers.MockController) {
 
 func main() {
 	e := echo.New()
+
+	db, err := sqlx.Connect("sqlite3", "mocks.sqlite")
+	if err != nil {
+		log.Fatalln("Unable to connect to DB", err)
+	}
+
+	err = utils.InitDatabase(db)
+	if err != nil {
+		log.Fatalln("Unable to init DB", err)
+	}
 
 	mockController := controllers.RegisterMockController(e, "mocks")
 
