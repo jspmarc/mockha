@@ -1,7 +1,11 @@
 package constants
 
 const Schema string = `
+PRAGMA FOREIGN_KEYS = ON;
+
 CREATE TABLE http_mock (
+    id INT PRIMARY KEY AUTOINCREMENT,
+    
     mock_group TEXT,
     path TEXT DEFAULT '',
     method TEXT CHECK ( method IN ('GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH') ) NOT NULL,
@@ -17,7 +21,7 @@ CREATE TABLE http_mock (
     response_body_content_type TEXT,
     response_code INT CHECK ( response_code >= 100 AND response_code < 600 ) DEFAULT 200,
 
-    PRIMARY KEY (mock_group, path, method),
+    UNIQUE (mock_group, path, method),
 
     CHECK ( 
         ((request_body IS NULL) OR (request_body IS NOT NULL AND request_body_content_type IS NOT NULL))
