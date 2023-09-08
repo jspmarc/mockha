@@ -2,8 +2,7 @@ package model
 
 import (
 	"database/sql"
-	"github.com/jmoiron/sqlx"
-	"github.com/josep/mockha/constants"
+	"github.com/jspmarc/mockha/constants"
 )
 
 type HttpMock struct {
@@ -19,6 +18,4 @@ type HttpMock struct {
 	ResponseBody             sql.NullString `db:"response_body" json:"response_body"`
 	ResponseBodyContentType  sql.NullString `db:"response_body_content_type" json:"response_body_content_type"`
 	ResponseCode             uint16         `db:"response_code" json:"response_code"`
-
-	db *sqlx.DB
 }

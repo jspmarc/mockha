@@ -2,8 +2,10 @@ package main
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/josep/mockha/controllers"
-	"github.com/josep/mockha/utils"
+	"github.com/jspmarc/mockha/controllers"
+	"github.com/jspmarc/mockha/dao"
+	"github.com/jspmarc/mockha/service"
+	"github.com/jspmarc/mockha/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
@@ -29,17 +31,23 @@ func interruptHandler(mockController *controllers.MockController) {
 func main() {
 	e := echo.New()
 
-	db, err := sqlx.Connect("sqlite3", "mocks.sqlite")
-	if err != nil {
+	var db *sqlx.DB
+	if d, err := sqlx.Connect("sqlite3", "mocks.sqlite"); err != nil {
+		db = d
+	} else {
 		log.Fatalln("Unable to connect to DB", err)
 	}
 
-	err = utils.InitDatabase(db)
-	if err != nil {
+	if err := utils.InitDatabase(db); err != nil {
 		log.Fatalln("Unable to init DB", err)
 	}
 
-	mockController := controllers.RegisterMockController(e, "mocks")
+	mockDao := dao.NewHttpMockDao(db)
+
+	mockServicePort := uint16(8081)
+	mockService := service.NewMockService(mockDao, &mockServicePort)
+
+	mockController := controllers.RegisterMockController(e, mockService, "mocks")
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

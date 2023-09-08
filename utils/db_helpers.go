@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"github.com/josep/mockha/constants"
+	"github.com/jspmarc/mockha/constants"
 	"log"
 )
 
