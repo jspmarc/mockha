@@ -19,7 +19,6 @@ CREATE TABLE http_request_response (
     http_mock_id INTEGER,
     
 	-- gob-encoded golang map
-    request_header BLOB,
     request_body TEXT,
     request_body_mime_type TEXT,
 
@@ -37,5 +36,5 @@ CREATE TABLE http_request_response (
         ((response_body IS NULL) OR (response_body IS NOT NULL AND response_body_mime_type IS NOT NULL))
     )
 );
-CREATE INDEX http_request_response__mock_request ON http_request_response (http_mock_id, request_header, request_body, request_body_mime_type);
+CREATE INDEX http_request_response__mock_request ON http_request_response (http_mock_id, request_body, request_body_mime_type);
 `
