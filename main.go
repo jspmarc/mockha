@@ -30,12 +30,7 @@ func interruptHandler(mockController *controllers.MockController) {
 func main() {
 	e := echo.New()
 
-	var db *sqlx.DB
-	if d, err := sqlx.Connect("sqlite3", "mocks.sqlite"); err != nil {
-		log.Fatalln("Unable to connect to DB", err)
-	} else {
-		db = d
-	}
+	db := sqlx.MustConnect("sqlite3", "mocks.sqlite")
 
 	mockDao := dao.NewHttpMockDao(db)
 	requestResponseDao := dao.NewRequestResponseDao(db)
