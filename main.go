@@ -5,7 +5,6 @@ import (
 	"github.com/jspmarc/mockha/controllers"
 	"github.com/jspmarc/mockha/dao"
 	"github.com/jspmarc/mockha/service"
-	"github.com/jspmarc/mockha/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
@@ -38,16 +37,11 @@ func main() {
 		log.Fatalln("Unable to connect to DB", err)
 	}
 
-	if err := utils.InitDatabase(db); err != nil {
-		log.Fatalln("Unable to init DB", err)
-	}
-
 	mockDao := dao.NewHttpMockDao(db)
 
-	mockServicePort := uint16(8081)
-	mockService := service.NewMockService(mockDao, &mockServicePort)
+	mockService := service.NewMockService(mockDao)
 
-	mockController := controllers.RegisterMockController(e, mockService, "mocks")
+	mockController := controllers.NewMockController(e, mockService, "mocks")
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

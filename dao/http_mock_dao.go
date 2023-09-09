@@ -32,6 +32,10 @@ func (d *HttpMockDao) FindOne(group sql.NullString, path string, method constant
 	return nil, nil
 }
 
+func (d *HttpMockDao) FindOneById(id int64) (*model.HttpMock, error) {
+	return nil, nil
+}
+
 func (d *HttpMockDao) FindByGroup(group sql.NullString) ([]*model.HttpMock, error) {
 	return nil, nil
 }
