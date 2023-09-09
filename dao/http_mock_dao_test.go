@@ -14,18 +14,7 @@ import (
 
 func TestHttpMockDao_Save_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -48,18 +37,7 @@ func TestHttpMockDao_Save_success(t *testing.T) {
 
 func TestHttpMockDao_Save_errorBeginTx(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -80,18 +58,7 @@ func TestHttpMockDao_Save_errorBeginTx(t *testing.T) {
 
 func TestHttpMockDao_Save_errorExec(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -116,18 +83,7 @@ func TestHttpMockDao_Save_errorExec(t *testing.T) {
 
 func TestHttpMockDao_Save_errorCommit(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -153,18 +109,7 @@ func TestHttpMockDao_Save_errorCommit(t *testing.T) {
 
 func TestHttpMockDao_Update_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -188,18 +133,7 @@ func TestHttpMockDao_Update_success(t *testing.T) {
 
 func TestHttpMockDao_Update_errorBeginTx(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -222,18 +156,7 @@ func TestHttpMockDao_Update_errorBeginTx(t *testing.T) {
 
 func TestHttpMockDao_Update_errorExec(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -259,18 +182,7 @@ func TestHttpMockDao_Update_errorExec(t *testing.T) {
 
 func TestHttpMockDao_Update_errorCommit(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -296,18 +208,7 @@ func TestHttpMockDao_Update_errorCommit(t *testing.T) {
 
 func TestHttpMockDao_DeleteById_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -325,18 +226,7 @@ func TestHttpMockDao_DeleteById_success(t *testing.T) {
 
 func TestHttpMockDao_DeleteById_errorBeginTx(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -353,18 +243,7 @@ func TestHttpMockDao_DeleteById_errorBeginTx(t *testing.T) {
 
 func TestHttpMockDao_DeleteById_errorExec(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -384,18 +263,7 @@ func TestHttpMockDao_DeleteById_errorExec(t *testing.T) {
 
 func TestHttpMockDao_DeleteById_errorCommit(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -415,18 +283,7 @@ func TestHttpMockDao_DeleteById_errorCommit(t *testing.T) {
 
 func TestHttpMockDao_FindByGroup_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -458,18 +315,7 @@ func TestHttpMockDao_FindByGroup_success(t *testing.T) {
 
 func TestHttpMockDao_FindByGroup_error(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -492,18 +338,7 @@ func TestHttpMockDao_FindByGroup_error(t *testing.T) {
 
 func TestHttpMockDao_FindAll_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
@@ -534,18 +369,7 @@ func TestHttpMockDao_FindAll_success(t *testing.T) {
 
 func TestHttpMockDao_FindAll_error(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
-	defer func(mockDb *sql.DB) {
-		err := mockDb.Close()
-		if err != nil {
-		}
-	}(mockDb)
-
 	db := sqlx.NewDb(mockDb, "sqlmock")
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
 
 	daoInstance := dao.NewHttpMockDao(db)
 
