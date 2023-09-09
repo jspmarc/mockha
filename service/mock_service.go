@@ -23,7 +23,7 @@ func NewMockService(mockDao dao.HttpMockDao, requestResponseDao dao.HttpRequestR
 }
 
 func (s *MockService) RegisterMock(mock *model.HttpMock) (*model.HttpMock, error) {
-	println("test")
+	println("tests")
 
 	return nil, nil
 }
