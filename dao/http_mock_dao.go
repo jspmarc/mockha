@@ -28,6 +28,10 @@ func (d *HttpMockDao) Upsert(mock *model.HttpMock) (*model.HttpMock, error) {
 	return nil, nil
 }
 
+func (d *HttpMockDao) DeleteById(id int64) error {
+	return nil
+}
+
 func (d *HttpMockDao) FindOne(group sql.NullString, path string, method constants.HttpMethod) (*model.HttpMock, error) {
 	return nil, nil
 }
