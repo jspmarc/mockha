@@ -6,21 +6,18 @@ import (
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/model"
-	"log"
-	"net/http"
 )
 
 type MockService struct {
-	httpMock dao.HttpMockDao
+	httpMockDao        dao.HttpMockDao
+	requestResponseDao dao.HttpRequestResponseDao
 }
 
-func NewMockService(mockDao dao.HttpMockDao) service.MockService {
+func NewMockService(mockDao dao.HttpMockDao, requestResponseDao dao.HttpRequestResponseDao) service.MockService {
 	svc := &MockService{}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", svc.callMock)
-
-	svc.httpMock = mockDao
+	svc.httpMockDao = mockDao
+	svc.requestResponseDao = requestResponseDao
 
 	return svc
 }
@@ -53,8 +50,4 @@ func (s *MockService) GetMock(group sql.NullString, path string, method constant
 
 func (s *MockService) ExecuteMock(group sql.NullString, path string, method constants.HttpMethod) (interface{}, error) {
 	return nil, nil
-}
-
-func (s *MockService) callMock(w http.ResponseWriter, req *http.Request) {
-	log.Println("A mock is called with path", req.URL.Path, "and method", req.Method)
 }

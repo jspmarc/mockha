@@ -32,14 +32,15 @@ func main() {
 
 	var db *sqlx.DB
 	if d, err := sqlx.Connect("sqlite3", "mocks.sqlite"); err != nil {
-		db = d
-	} else {
 		log.Fatalln("Unable to connect to DB", err)
+	} else {
+		db = d
 	}
 
 	mockDao := dao.NewHttpMockDao(db)
+	requestResponseDao := dao.NewRequestResponseDao(db)
 
-	mockService := service.NewMockService(mockDao)
+	mockService := service.NewMockService(mockDao, requestResponseDao)
 
 	mockController := controllers.NewMockController(e, mockService, "mocks")
 
