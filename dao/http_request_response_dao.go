@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/jspmarc/mockha/api/dao"
 	"github.com/jspmarc/mockha/model"
@@ -33,7 +34,7 @@ func (rr *HttpRequestResponsesDao) Save(reqres *model.HttpRequestResponse) (*mod
 		reqres.RequestBodyMimeType,
 		reqres.AdditionalResponseHeader,
 		reqres.ResponseBody,
-		reqres.ResponseBodyContentType,
+		reqres.ResponseBodyMimeType,
 		reqres.ResponseCode,
 	)
 	if err != nil {
@@ -49,8 +50,7 @@ func (rr *HttpRequestResponsesDao) Save(reqres *model.HttpRequestResponse) (*mod
 }
 
 func (rr *HttpRequestResponsesDao) Update(reqres *model.HttpRequestResponse) (*model.HttpRequestResponse, error) {
-	query := rr.db.Rebind(`
-UPDATE http_request_response SET
+	query := rr.db.Rebind(`UPDATE http_request_response SET
                                 http_mock_id = ?,
                                 request_body = ?,
                                 request_body_mime_type = ?,
@@ -58,8 +58,7 @@ UPDATE http_request_response SET
                                 response_body = ?,
                                 response_body_mime_type = ?,
                                 response_code = ?
-WHERE id = ?
-`)
+WHERE id = ?`)
 
 	tx, err := rr.db.Begin()
 	if err != nil {
@@ -73,7 +72,7 @@ WHERE id = ?
 		reqres.RequestBodyMimeType,
 		reqres.AdditionalResponseHeader,
 		reqres.ResponseBody,
-		reqres.ResponseBodyContentType,
+		reqres.ResponseBodyMimeType,
 		reqres.ResponseCode,
 	)
 	if err != nil {
@@ -113,7 +112,7 @@ func (rr *HttpRequestResponsesDao) FindOneById(id int64) (*model.HttpRequestResp
 	requestResponse := &model.HttpRequestResponse{}
 
 	query := rr.db.Rebind("SELECT * FROM http_request_response WHERE id = ?")
-	err := rr.db.Select(&requestResponse, query, id)
+	err := rr.db.Get(requestResponse, query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -121,11 +120,11 @@ func (rr *HttpRequestResponsesDao) FindOneById(id int64) (*model.HttpRequestResp
 	return requestResponse, nil
 }
 
-func (rr *HttpRequestResponsesDao) FindOneForRequest(httpMockId int64, reqBody string) (*model.HttpRequestResponse, error) {
+func (rr *HttpRequestResponsesDao) FindOneForRequest(httpMockId int64, reqBody sql.NullString) (*model.HttpRequestResponse, error) {
 	requestResponse := &model.HttpRequestResponse{}
 
 	query := rr.db.Rebind("SELECT * FROM http_request_response WHERE http_mock_id = ? AND request_body = ?")
-	err := rr.db.Select(&requestResponse, query, httpMockId, reqBody)
+	err := rr.db.Get(requestResponse, query, httpMockId, reqBody)
 	if err != nil {
 		return nil, err
 	}

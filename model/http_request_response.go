@@ -11,10 +11,10 @@ type HttpRequestResponse struct {
 
 	RequestHeader       sql.NullByte   `db:"request_header" json:"request_header"`
 	RequestBody         sql.NullString `db:"request_body" json:"request_body"`
-	RequestBodyMimeType sql.NullString `db:"request_body_content_type" json:"request_body_content_type"`
+	RequestBodyMimeType sql.NullString `db:"request_body_mime_type" json:"request_body_mime_type"`
 
 	AdditionalResponseHeader sql.NullByte   `db:"additional_response_header" json:"additional_response_header"`
 	ResponseBody             sql.NullString `db:"response_body" json:"response_body"`
-	ResponseBodyContentType  sql.NullString `db:"response_body_content_type" json:"response_body_content_type"`
+	ResponseBodyMimeType     sql.NullString `db:"response_body_mime_type" json:"response_body_mime_type"`
 	ResponseCode             uint16         `db:"response_code" json:"response_code"`
 }
