@@ -13,12 +13,12 @@ import (
 	"os/signal"
 )
 
-func interruptHandler(mockController *controllers.MockController) {
+func interruptHandler(httpMockController *controllers.HttpMockController) {
 	sigchan := make(chan os.Signal)
 	signal.Notify(sigchan, os.Interrupt)
 	<-sigchan
 
-	if err := mockController.Stop(); err != nil {
+	if err := httpMockController.Stop(); err != nil {
 		log.Println("Unable to stop mock controller", err)
 	}
 
@@ -35,14 +35,14 @@ func main() {
 	mockDao := dao.NewHttpMockDao(db)
 	requestResponseDao := dao.NewRequestResponseDao(db)
 
-	mockService := service.NewMockService(mockDao, requestResponseDao)
+	httpMockService := service.NewHttpMockService(mockDao, requestResponseDao)
 
-	mockController := controllers.NewMockController(e, mockService, "mocks")
+	httpMockController := controllers.NewMockController(e, httpMockService, "http-mocks")
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	go interruptHandler(mockController)
+	go interruptHandler(httpMockController)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

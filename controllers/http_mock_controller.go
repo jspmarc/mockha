@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-type MockController struct {
-	mockService service.MockService
+type HttpMockController struct {
+	httpMockService service.HttpMockService
 }
 
-func NewMockController(e *echo.Echo, mockService service.MockService, prefix string) *MockController {
-	c := new(MockController)
-	c.mockService = mockService
+func NewMockController(e *echo.Echo, mockService service.HttpMockService, prefix string) *HttpMockController {
+	c := new(HttpMockController)
+	c.httpMockService = mockService
 
 	group := e.Group(prefix)
 	group.POST("/", c.registerMock)
@@ -29,36 +29,36 @@ func NewMockController(e *echo.Echo, mockService service.MockService, prefix str
 	return c
 }
 
-func (c *MockController) registerMock(ctx echo.Context) error {
+func (c *HttpMockController) registerMock(ctx echo.Context) error {
 	ctx.Logger().Printf("called registerMock with path %s\n", ctx.Path())
-	c.mockService.RegisterMock(&model.HttpMock{})
+	c.httpMockService.RegisterMock(&model.HttpMock{})
 	return ctx.String(http.StatusOK, fmt.Sprintf("called registerMock with path %s", ctx.Path()))
 }
 
-func (c *MockController) editMock(ctx echo.Context) error {
+func (c *HttpMockController) editMock(ctx echo.Context) error {
 	ctx.Logger().Printf("called editMock with path %s\n", ctx.Path())
-	c.mockService.EditMock(&model.HttpMock{})
+	c.httpMockService.EditMock(&model.HttpMock{})
 	return ctx.String(http.StatusOK, fmt.Sprintf("called editMock with path %s", ctx.Path()))
 }
 
-func (c *MockController) deleteMock(ctx echo.Context) error {
+func (c *HttpMockController) deleteMock(ctx echo.Context) error {
 	ctx.Logger().Printf("called deleteMock with path %s\n", ctx.Path())
-	c.mockService.DeleteMock(sql.NullString{String: "", Valid: true}, "", constants.HTTP_METHOD_GET)
+	c.httpMockService.DeleteMock(sql.NullString{String: "", Valid: true}, "", constants.HTTP_METHOD_GET)
 	return ctx.String(http.StatusOK, fmt.Sprintf("called deleteMock with path %s", ctx.Path()))
 }
 
-func (c *MockController) getMocks(ctx echo.Context) error {
+func (c *HttpMockController) getMocks(ctx echo.Context) error {
 	ctx.Logger().Printf("called getMock with path %s\n", ctx.Path())
-	c.mockService.GetAllMocks()
+	c.httpMockService.GetAllMocks()
 	return ctx.String(http.StatusOK, fmt.Sprintf("called getMock with path %s", ctx.Path()))
 }
 
-func (c *MockController) executeMock(ctx echo.Context) error {
+func (c *HttpMockController) executeMock(ctx echo.Context) error {
 	ctx.Logger().Printf("called getMock with path %s\n", ctx.Path())
-	c.mockService.ExecuteMock(sql.NullString{String: "", Valid: true}, "", constants.HTTP_METHOD_GET)
+	c.httpMockService.ExecuteMock(sql.NullString{String: "", Valid: true}, "", constants.HTTP_METHOD_GET)
 	return ctx.String(http.StatusOK, fmt.Sprintf("called getMock with path %s", ctx.Path()))
 }
 
-func (c *MockController) Stop() error {
+func (c *HttpMockController) Stop() error {
 	return nil
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/jspmarc/mockha/model"
 )
 
-type MockService interface {
+type HttpMockService interface {
 	RegisterMock(mock *model.HttpMock) (*model.HttpMock, error)
 	EditMock(mock *model.HttpMock) (*model.HttpMock, error)
 	DeleteMock(group sql.NullString, path string, method constants.HttpMethod) error
