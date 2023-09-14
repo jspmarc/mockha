@@ -20,22 +20,13 @@ type HttpMockDao struct {
 }
 
 func (d *HttpMockDao) Save(mock *model.HttpMock) (*model.HttpMock, error) {
-	query := d.db.Rebind("INSERT INTO http_mock (mock_group, path, method) VALUES (?, ?, ?)")
+	query := d.db.Rebind("INSERT INTO http_mock (mock_group, path, method) VALUES (?, ?, ?) RETURNING id")
 
-	tx, err := d.db.Begin()
+	result, err := d.db.Exec(query, mock.Group, mock.Path, mock.Method)
 	if err != nil {
 		return nil, err
 	}
-
-	_, err = tx.Exec(query, mock.Group, mock.Path, mock.Method)
-	if err != nil {
-		return nil, err
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return nil, err
-	}
+	mock.Id, _ = result.LastInsertId()
 
 	return mock, nil
 }
@@ -43,17 +34,7 @@ func (d *HttpMockDao) Save(mock *model.HttpMock) (*model.HttpMock, error) {
 func (d *HttpMockDao) Update(mock *model.HttpMock) (*model.HttpMock, error) {
 	query := d.db.Rebind("UPDATE http_mock SET method = ?, mock_group = ?, path = ? WHERE id = ?")
 
-	tx, err := d.db.Begin()
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = tx.Exec(query, mock.Group, mock.Path, mock.Method, mock.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	err = tx.Commit()
+	_, err := d.db.Exec(query, mock.Group, mock.Path, mock.Method, mock.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -64,17 +45,7 @@ func (d *HttpMockDao) Update(mock *model.HttpMock) (*model.HttpMock, error) {
 func (d *HttpMockDao) DeleteById(id int64) error {
 	query := d.db.Rebind("DELETE FROM http_mock WHERE id = ?")
 
-	tx, err := d.db.Begin()
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(query, id)
-	if err != nil {
-		return err
-	}
-
-	err = tx.Commit()
+	_, err := d.db.Exec(query, id)
 	if err != nil {
 		return err
 	}

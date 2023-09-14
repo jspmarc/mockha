@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	httpMockData = &model.HttpMock{
+	httpMockData = model.HttpMock{
 		Group:  sql.NullString{String: "group", Valid: true},
 		Path:   "path",
 		Method: constants.HTTP_METHOD_GET,
@@ -23,7 +23,7 @@ var (
 
 	id = int64(1)
 
-	httpMockInsertQuery      = "INSERT INTO http_mock (.+) VALUES (.+)"
+	httpMockInsertQuery      = "INSERT INTO http_mock (.+) VALUES (.+) RETURNING id"
 	httpMockUpdateQuery      = "UPDATE http_mock SET (.+) WHERE id = (.+)"
 	httpMockDeleteQuery      = "DELETE FROM http_mock WHERE id = (.+)"
 	httpMockFindByGroupQuery = "SELECT (.*) FROM http_mock WHERE mock_group = (.+)"
@@ -36,61 +36,28 @@ func TestHttpMockDao_Save_success(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpMockInsertQuery).
 		WithArgs(httpMockData.Group, httpMockData.Path, httpMockData.Method).
-		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
+		WillReturnResult(sqlmock.NewResult(2, 1))
 
-	newMockData, err := daoInstance.Save(httpMockData)
+	expected := httpMockData
+	expected.Id = 2
+
+	newMockData, err := daoInstance.Save(&httpMockData)
 	assert.NoError(t, err)
-	assert.Equal(t, httpMockData, newMockData)
+	assert.Equal(t, expected, *newMockData)
 }
-
-func TestHttpMockDao_Save_errorBeginTx(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	daoInstance := dao.NewHttpMockDao(db)
-
-	mock.ExpectBegin().WillReturnError(dbError)
-
-	newMockData, err := daoInstance.Save(httpMockData)
-	assert.Error(t, err, dbError)
-	assert.Nil(t, newMockData)
-}
-
 func TestHttpMockDao_Save_errorExec(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpMockInsertQuery).
 		WithArgs(httpMockData.Group, httpMockData.Path, httpMockData.Method).
 		WillReturnError(dbError)
-	mock.ExpectCommit()
 
-	newMockData, err := daoInstance.Save(httpMockData)
-	assert.Error(t, err, dbError)
-	assert.Nil(t, newMockData)
-}
-
-func TestHttpMockDao_Save_errorCommit(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	daoInstance := dao.NewHttpMockDao(db)
-
-	mock.ExpectBegin()
-	mock.ExpectExec(httpMockInsertQuery).
-		WithArgs(httpMockData.Group, httpMockData.Path, httpMockData.Method).
-		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit().
-		WillReturnError(dbError)
-
-	newMockData, err := daoInstance.Save(httpMockData)
+	newMockData, err := daoInstance.Save(&httpMockData)
 	assert.Error(t, err, dbError)
 	assert.Nil(t, newMockData)
 }
@@ -101,29 +68,13 @@ func TestHttpMockDao_Update_success(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpMockUpdateQuery).
 		WithArgs(httpMockData.Group, httpMockData.Path, httpMockData.Method, httpMockData.Id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
 
-	updatedMockData, err := daoInstance.Update(httpMockData)
+	updatedMockData, err := daoInstance.Update(&httpMockData)
 	assert.NoError(t, err)
-	assert.Equal(t, httpMockData, updatedMockData)
-}
-
-func TestHttpMockDao_Update_errorBeginTx(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	daoInstance := dao.NewHttpMockDao(db)
-
-	mock.ExpectBegin().
-		WillReturnError(dbError)
-
-	updatedMockData, err := daoInstance.Update(httpMockData)
-	assert.Error(t, err, dbError)
-	assert.Nil(t, updatedMockData)
+	assert.Equal(t, httpMockData, *updatedMockData)
 }
 
 func TestHttpMockDao_Update_errorExec(t *testing.T) {
@@ -132,30 +83,11 @@ func TestHttpMockDao_Update_errorExec(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpMockUpdateQuery).
 		WithArgs(httpMockData.Group, httpMockData.Path, httpMockData.Method, httpMockData.Id).
 		WillReturnError(dbError)
-	mock.ExpectCommit()
 
-	updatedMockData, err := daoInstance.Update(httpMockData)
-	assert.Error(t, err, dbError)
-	assert.Nil(t, updatedMockData)
-}
-
-func TestHttpMockDao_Update_errorCommit(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	daoInstance := dao.NewHttpMockDao(db)
-
-	mock.ExpectBegin()
-	mock.ExpectExec(httpMockUpdateQuery).
-		WithArgs(httpMockData.Group, httpMockData.Path, httpMockData.Method, httpMockData.Id).
-		WillReturnError(dbError)
-	mock.ExpectCommit()
-
-	updatedMockData, err := daoInstance.Update(httpMockData)
+	updatedMockData, err := daoInstance.Update(&httpMockData)
 	assert.Error(t, err, dbError)
 	assert.Nil(t, updatedMockData)
 }
@@ -166,29 +98,12 @@ func TestHttpMockDao_DeleteById_success(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	id := int64(1)
-
-	mock.ExpectBegin()
 	mock.ExpectExec(httpMockDeleteQuery).
 		WithArgs(id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
 
 	err := daoInstance.DeleteById(id)
 	assert.NoError(t, err)
-}
-
-func TestHttpMockDao_DeleteById_errorBeginTx(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	daoInstance := dao.NewHttpMockDao(db)
-
-	mock.ExpectBegin().
-		WillReturnError(dbError)
-
-	err := daoInstance.DeleteById(id)
-	assert.Error(t, err, dbError)
 }
 
 func TestHttpMockDao_DeleteById_errorExec(t *testing.T) {
@@ -197,27 +112,9 @@ func TestHttpMockDao_DeleteById_errorExec(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpMockDeleteQuery).
 		WithArgs(id).
 		WillReturnError(dbError)
-	mock.ExpectCommit()
-
-	err := daoInstance.DeleteById(id)
-	assert.Error(t, err, dbError)
-}
-
-func TestHttpMockDao_DeleteById_errorCommit(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	daoInstance := dao.NewHttpMockDao(db)
-
-	mock.ExpectBegin()
-	mock.ExpectExec(httpMockDeleteQuery).
-		WithArgs(id).
-		WillReturnError(dbError)
-	mock.ExpectCommit()
 
 	err := daoInstance.DeleteById(id)
 	assert.Error(t, err, dbError)

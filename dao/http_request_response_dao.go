@@ -22,12 +22,7 @@ type HttpRequestResponsesDao struct {
 func (rr *HttpRequestResponsesDao) Save(reqres *model.HttpRequestResponse) (*model.HttpRequestResponse, error) {
 	query := rr.db.Rebind("INSERT INTO http_request_response (http_mock_id, request_body, request_body_mime_type, additional_response_header, response_body, response_body_mime_type, response_code) VALUES (?, ?, ?, ?, ?, ?, ?)")
 
-	tx, err := rr.db.Begin()
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = tx.Exec(
+	_, err := rr.db.Exec(
 		query,
 		reqres.HttpMockId,
 		reqres.RequestBody,
@@ -37,11 +32,6 @@ func (rr *HttpRequestResponsesDao) Save(reqres *model.HttpRequestResponse) (*mod
 		reqres.ResponseBodyMimeType,
 		reqres.ResponseCode,
 	)
-	if err != nil {
-		return nil, err
-	}
-
-	err = tx.Commit()
 	if err != nil {
 		return nil, err
 	}
@@ -60,12 +50,7 @@ func (rr *HttpRequestResponsesDao) Update(reqres *model.HttpRequestResponse) (*m
                                 response_code = ?
 WHERE id = ?`)
 
-	tx, err := rr.db.Begin()
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = tx.Exec(
+	_, err := rr.db.Exec(
 		query,
 		reqres.HttpMockId,
 		reqres.RequestBody,
@@ -79,28 +64,13 @@ WHERE id = ?`)
 		return nil, err
 	}
 
-	err = tx.Commit()
-	if err != nil {
-		return nil, err
-	}
-
 	return reqres, nil
 }
 
 func (rr *HttpRequestResponsesDao) Delete(id int64) error {
 	query := rr.db.Rebind("DELETE FROM http_request_response WHERE id = ?")
 
-	tx, err := rr.db.Begin()
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(query, id)
-	if err != nil {
-		return err
-	}
-
-	err = tx.Commit()
+	_, err := rr.db.Exec(query, id)
 	if err != nil {
 		return err
 	}

@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	reqres = &model.HttpRequestResponse{
+	reqres = model.HttpRequestResponse{
 		HttpMockId: 1,
 		RequestBody: sql.NullString{
 			String: "request-body",
@@ -60,33 +60,17 @@ func TestHttpRequestResponsesDao_Save_success(t *testing.T) {
 
 	rrInstance := dao.NewRequestResponseDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpRequestResponseInsertQuery).
 		WithArgs(reqres.HttpMockId, reqres.RequestBody, reqres.RequestBodyMimeType, reqres.AdditionalResponseHeader,
 			reqres.ResponseBody, reqres.ResponseBodyMimeType, reqres.ResponseCode).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
 
-	// call the 'Save' method
-	res, err := rrInstance.Save(reqres)
+	expected := reqres
+
+	res, err := rrInstance.Save(&reqres)
 
 	assert.NoError(t, err)
-	assert.Equal(t, reqres, res)
-}
-
-func TestHttpRequestResponsesDao_Save_errorBeginTx(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	rrInstance := dao.NewRequestResponseDao(db)
-
-	mock.ExpectBegin().WillReturnError(dbError)
-
-	// call the 'Save' method
-	res, err := rrInstance.Save(reqres)
-
-	assert.Error(t, err)
-	assert.Nil(t, res)
+	assert.Equal(t, expected, *res)
 }
 
 func TestHttpRequestResponsesDao_Save_errorExec(t *testing.T) {
@@ -95,7 +79,6 @@ func TestHttpRequestResponsesDao_Save_errorExec(t *testing.T) {
 
 	rrInstance := dao.NewRequestResponseDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpRequestResponseInsertQuery).
 		WithArgs(
 			reqres.HttpMockId,
@@ -107,37 +90,8 @@ func TestHttpRequestResponsesDao_Save_errorExec(t *testing.T) {
 			reqres.ResponseCode,
 		).
 		WillReturnError(dbError)
-	mock.ExpectCommit()
 
-	// call the 'Save' method
-	res, err := rrInstance.Save(reqres)
-
-	assert.Error(t, err)
-	assert.Nil(t, res)
-}
-
-func TestHttpRequestResponsesDao_Save_errorCommit(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	rrInstance := dao.NewRequestResponseDao(db)
-
-	mock.ExpectBegin()
-	mock.ExpectExec(httpRequestResponseInsertQuery).
-		WithArgs(
-			reqres.HttpMockId,
-			reqres.RequestBody,
-			reqres.RequestBodyMimeType,
-			reqres.AdditionalResponseHeader,
-			reqres.ResponseBody,
-			reqres.ResponseBodyMimeType,
-			reqres.ResponseCode,
-		).
-		WillReturnError(dbError)
-	mock.ExpectCommit().WillReturnError(dbError)
-
-	// call the 'Save' method
-	res, err := rrInstance.Save(reqres)
+	res, err := rrInstance.Save(&reqres)
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
@@ -149,33 +103,15 @@ func TestHttpRequestResponsesDao_Update_success(t *testing.T) {
 
 	rrInstance := dao.NewRequestResponseDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpRequestResponseUpdateQuery).
 		WithArgs(reqres.HttpMockId, reqres.RequestBody, reqres.RequestBodyMimeType, reqres.AdditionalResponseHeader,
 			reqres.ResponseBody, reqres.ResponseBodyMimeType, reqres.ResponseCode).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
 
-	// call the 'Update' method
-	res, err := rrInstance.Update(reqres)
+	res, err := rrInstance.Update(&reqres)
 
 	assert.NoError(t, err)
-	assert.Equal(t, reqres, res)
-}
-
-func TestHttpRequestResponsesDao_Update_errorBeginTx(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	rrInstance := dao.NewRequestResponseDao(db)
-
-	mock.ExpectBegin().WillReturnError(dbError)
-
-	// call the 'Update' method
-	res, err := rrInstance.Update(reqres)
-
-	assert.Error(t, err)
-	assert.Nil(t, res)
+	assert.Equal(t, reqres, *res)
 }
 
 func TestHttpRequestResponsesDao_Update_errorExec(t *testing.T) {
@@ -184,7 +120,6 @@ func TestHttpRequestResponsesDao_Update_errorExec(t *testing.T) {
 
 	rrInstance := dao.NewRequestResponseDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpRequestResponseUpdateQuery).
 		WithArgs(
 			reqres.HttpMockId,
@@ -196,37 +131,8 @@ func TestHttpRequestResponsesDao_Update_errorExec(t *testing.T) {
 			reqres.ResponseCode,
 		).
 		WillReturnError(dbError)
-	mock.ExpectCommit()
 
-	// call the 'Update' method
-	res, err := rrInstance.Update(reqres)
-
-	assert.Error(t, err)
-	assert.Nil(t, res)
-}
-
-func TestHttpRequestResponsesDao_Update_errorCommit(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	rrInstance := dao.NewRequestResponseDao(db)
-
-	mock.ExpectBegin()
-	mock.ExpectExec(httpRequestResponseUpdateQuery).
-		WithArgs(
-			reqres.HttpMockId,
-			reqres.RequestBody,
-			reqres.RequestBodyMimeType,
-			reqres.AdditionalResponseHeader,
-			reqres.ResponseBody,
-			reqres.ResponseBodyMimeType,
-			reqres.ResponseCode,
-		).
-		WillReturnError(dbError)
-	mock.ExpectCommit().WillReturnError(dbError)
-
-	// call the 'Update' method
-	res, err := rrInstance.Update(reqres)
+	res, err := rrInstance.Update(&reqres)
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
@@ -238,30 +144,13 @@ func TestHttpRequestResponsesDao_Delete_success(t *testing.T) {
 
 	rrInstance := dao.NewRequestResponseDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpRequestResponseDeleteQuery).
 		WithArgs(id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
 
-	// call the 'Delete' method
 	err := rrInstance.Delete(id)
 
 	assert.NoError(t, err)
-}
-
-func TestHttpRequestResponsesDao_Delete_errorBeginTx(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	rrInstance := dao.NewRequestResponseDao(db)
-
-	mock.ExpectBegin().WillReturnError(dbError)
-
-	// call the 'Delete' method
-	err := rrInstance.Delete(id)
-
-	assert.Error(t, err)
 }
 
 func TestHttpRequestResponsesDao_Delete_errorExec(t *testing.T) {
@@ -270,31 +159,10 @@ func TestHttpRequestResponsesDao_Delete_errorExec(t *testing.T) {
 
 	rrInstance := dao.NewRequestResponseDao(db)
 
-	mock.ExpectBegin()
 	mock.ExpectExec(httpRequestResponseDeleteQuery).
 		WithArgs(id).
 		WillReturnError(dbError)
-	mock.ExpectCommit()
 
-	// call the 'Delete' method
-	err := rrInstance.Delete(id)
-
-	assert.Error(t, err)
-}
-
-func TestHttpRequestResponsesDao_Delete_errorCommit(t *testing.T) {
-	mockDb, mock, _ := sqlmock.New()
-	db := sqlx.NewDb(mockDb, "sqlmock")
-
-	rrInstance := dao.NewRequestResponseDao(db)
-
-	mock.ExpectBegin()
-	mock.ExpectExec(httpRequestResponseDeleteQuery).
-		WithArgs(id).
-		WillReturnError(dbError)
-	mock.ExpectCommit().WillReturnError(dbError)
-
-	// call the 'Delete' method
 	err := rrInstance.Delete(id)
 
 	assert.Error(t, err)
