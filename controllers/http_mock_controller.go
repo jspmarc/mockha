@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
+	"github.com/jspmarc/mockha/dto/http_mock"
 	"github.com/jspmarc/mockha/model"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -31,8 +32,17 @@ func NewMockController(e *echo.Echo, mockService service.HttpMockService, prefix
 
 func (c *HttpMockController) registerMock(ctx echo.Context) error {
 	ctx.Logger().Printf("called registerMock with path %s\n", ctx.Path())
-	c.httpMockService.RegisterMock(&model.HttpMock{})
-	return ctx.String(http.StatusOK, fmt.Sprintf("called registerMock with path %s", ctx.Path()))
+
+	var req http_mock.CreateRequest
+	if err := ctx.Bind(&req); err != nil {
+		return err
+	}
+
+	if mock, err := c.httpMockService.RegisterMock(&req); err != nil {
+		return err
+	} else {
+		return ctx.JSON(http.StatusOK, mock)
+	}
 }
 
 func (c *HttpMockController) editMock(ctx echo.Context) error {

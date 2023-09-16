@@ -1,28 +1,31 @@
 package utils
 
-import (
-	"fmt"
-	"log"
-	"math"
-	"math/rand"
-	"net"
-)
+import "database/sql"
 
-func GetRandomTcpPort() uint16 {
-	log.Println("Get a random TCP port")
-	randomPort := uint16(rand.Int31n(math.MaxInt16))
-	isPortOpen := false
-
-	for !isPortOpen {
-		c, e := net.Dial("tcp", fmt.Sprintf("localhost:%d", randomPort))
-
-		if e == nil && randomPort >= 1024 {
-			isPortOpen = true
-			c.Close()
-		} else {
-			randomPort = uint16(rand.Int31n(math.MaxInt16))
+func StrPtrToSqlNullString(str *string) sql.NullString {
+	if str == nil {
+		return sql.NullString{
+			String: "",
+			Valid:  false,
 		}
 	}
 
-	return randomPort
+	return sql.NullString{
+		String: *str,
+		Valid:  true,
+	}
+}
+
+func BytePtrToSqlNullByte(b *byte) sql.NullByte {
+	if b == nil {
+		return sql.NullByte{
+			Byte:  0x0,
+			Valid: false,
+		}
+	}
+
+	return sql.NullByte{
+		Byte:  *b,
+		Valid: true,
+	}
 }

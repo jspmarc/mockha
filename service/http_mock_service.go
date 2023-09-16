@@ -5,7 +5,9 @@ import (
 	"github.com/jspmarc/mockha/api/dao"
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
+	"github.com/jspmarc/mockha/dto/http_mock"
 	"github.com/jspmarc/mockha/model"
+	"github.com/jspmarc/mockha/utils/mapper"
 )
 
 type HttpMockService struct {
@@ -22,10 +24,20 @@ func NewHttpMockService(mockDao dao.HttpMockDao, requestResponseDao dao.HttpRequ
 	return svc
 }
 
-func (s *HttpMockService) RegisterMock(mock *model.HttpMock) (*model.HttpMock, error) {
-	println("tests")
+func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (*model.HttpMock, error) {
+	var err error
 
-	return nil, nil
+	mock := mapper.CreateRequestToModelHttpMock(createRequest)
+	if mock, err = s.httpMockDao.Save(mock); err != nil {
+		return nil, err
+	}
+
+	rr := mapper.CreateRequestToModelHttpRequestResponse(createRequest, mock.Id)
+	if _, err = s.requestResponseDao.Save(rr); err != nil {
+		return nil, err
+	}
+
+	return mock, nil
 }
 
 func (s *HttpMockService) EditMock(mock *model.HttpMock) (*model.HttpMock, error) {
