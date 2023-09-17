@@ -7,13 +7,13 @@ import (
 type HttpRequestResponse struct {
 	Id int64
 
-	HttpMockId int64 `db:"http_mock_id"`
+	HttpMockId int64 `db:"http_mock_id" json:"httpMockId"`
 
-	RequestBody         sql.NullString `db:"request_body"`
-	RequestBodyMimeType sql.NullString `db:"request_body_mime_type"`
+	RequestBody         sql.NullString `db:"request_body" json:"requestBody"`
+	RequestBodyMimeType sql.NullString `db:"request_body_mime_type" json:"requestBodyMimeType"`
 
-	AdditionalResponseHeader sql.NullByte   `db:"additional_response_header"`
-	ResponseBody             sql.NullString `db:"response_body"`
-	ResponseBodyMimeType     sql.NullString `db:"response_body_mime_type"`
-	ResponseCode             uint16         `db:"response_code"`
+	AdditionalResponseHeader sql.NullByte   `db:"additional_response_header" json:"additionalResponseHeader"`
+	ResponseBody             sql.NullString `db:"response_body" json:"responseBody"`
+	ResponseBodyMimeType     sql.NullString `db:"response_body_mime_type" json:"responseBodyMimeType"`
+	ResponseCode             uint16         `db:"response_code" json:"responseCode"`
 }

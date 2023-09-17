@@ -9,11 +9,11 @@ type CreateRequest struct {
 	Path   string
 	Method constants.HttpMethod
 
-	RequestBody         *string `json:"request_body"`
-	RequestBodyMimeType *string `json:"request_body_mime_type"`
+	RequestBody         *string `json:"requestBody"`
+	RequestBodyMimeType *string `json:"requestBodyMimeType"`
 
-	AdditionalResponseHeader *byte   `json:"additional_response_header"`
-	ResponseBody             *string `json:"response_body"`
-	ResponseBodyMimeType     *string `json:"response_body_mime_type"`
-	ResponseCode             uint16  `json:"response_code"`
+	AdditionalResponseHeader *byte   `json:"additionalResponseHeader"`
+	ResponseBody             *string `json:"responseBody"`
+	ResponseBodyMimeType     *string `json:"responseBodyMimeType"`
+	ResponseCode             uint16  `json:"responseCode"`
 }

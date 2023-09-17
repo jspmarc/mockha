@@ -8,7 +8,7 @@ import (
 type HttpMock struct {
 	Id int64
 
-	Group  sql.NullString
-	Path   string
-	Method constants.HttpMethod
+	Group  sql.NullString       `json:"group"`
+	Path   string               `json:"path"`
+	Method constants.HttpMethod `json:"method"`
 }

@@ -46,6 +46,7 @@ func (c *HttpMockController) registerMock(ctx echo.Context) error {
 
 	if (req.RequestBody != nil && req.RequestBodyMimeType == nil) ||
 		(req.RequestBody == nil && req.RequestBodyMimeType != nil) {
+
 		errMessage := "Invalid request body and MIME type combination"
 		return utils.ResponseHttp(ctx, http.StatusBadRequest, &errMessage, nil)
 	}
