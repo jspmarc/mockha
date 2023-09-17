@@ -9,7 +9,6 @@ type HttpRequestResponse struct {
 
 	HttpMockId int64 `db:"http_mock_id"`
 
-	RequestHeader       sql.NullByte   `db:"request_header"`
 	RequestBody         sql.NullString `db:"request_body"`
 	RequestBodyMimeType sql.NullString `db:"request_body_mime_type"`
 

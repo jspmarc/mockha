@@ -36,7 +36,6 @@ func CreateRequestToModelHttpRequestResponse(createRequest *http_mock.CreateRequ
 	}
 	rr := &model.HttpRequestResponse{
 		HttpMockId:               mockId,
-		RequestHeader:            utils.BytePtrToSqlNullByte(createRequest.RequestHeader),
 		RequestBody:              utils.StrPtrToSqlNullString(createRequest.RequestBody),
 		RequestBodyMimeType:      utils.StrPtrToSqlNullString(createRequest.RequestBodyMimeType),
 		AdditionalResponseHeader: utils.BytePtrToSqlNullByte(createRequest.AdditionalResponseHeader),

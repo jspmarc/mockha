@@ -9,7 +9,6 @@ type CreateRequest struct {
 	Path   string
 	Method constants.HttpMethod
 
-	RequestHeader       *byte   `json:"request_header"`
 	RequestBody         *string `json:"request_body"`
 	RequestBodyMimeType *string `json:"request_body_mime_type"`
 

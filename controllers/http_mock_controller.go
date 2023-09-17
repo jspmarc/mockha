@@ -7,6 +7,7 @@ import (
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/dto/http_mock"
 	"github.com/jspmarc/mockha/model"
+	"github.com/jspmarc/mockha/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -38,10 +39,32 @@ func (c *HttpMockController) registerMock(ctx echo.Context) error {
 		return err
 	}
 
+	if req.ResponseCode < 100 || req.ResponseCode >= 600 {
+		errMessage := "mock's response code should be between 100 and 599 (inclusive)"
+		return utils.ResponseHttp(ctx, http.StatusBadRequest, &errMessage, nil)
+	}
+
+	if (req.RequestBody != nil && req.RequestBodyMimeType == nil) ||
+		(req.RequestBody == nil && req.RequestBodyMimeType != nil) {
+		errMessage := "Invalid request body and MIME type combination"
+		return utils.ResponseHttp(ctx, http.StatusBadRequest, &errMessage, nil)
+	}
+
+	if req.Method != constants.HTTP_METHOD_GET && req.Method != constants.HTTP_METHOD_HEAD &&
+		req.Method != constants.HTTP_METHOD_POST && req.Method != constants.HTTP_METHOD_PUT &&
+		req.Method != constants.HTTP_METHOD_DELETE && req.Method != constants.HTTP_METHOD_CONNECT &&
+		req.Method != constants.HTTP_METHOD_OPTIONS && req.Method != constants.HTTP_METHOD_TRACE &&
+		req.Method != constants.HTTP_METHOD_PATCH {
+
+		errMessage := "Invalid HTTP method"
+		return utils.ResponseHttp(ctx, http.StatusBadRequest, &errMessage, nil)
+	}
+
 	if mock, err := c.httpMockService.RegisterMock(&req); err != nil {
-		return err
+		errMsg := err.Error()
+		return utils.ResponseHttp(ctx, http.StatusInternalServerError, &errMsg, nil)
 	} else {
-		return ctx.JSON(http.StatusOK, mock)
+		return utils.ResponseHttp(ctx, http.StatusOK, nil, mock)
 	}
 }
 
