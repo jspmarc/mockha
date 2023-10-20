@@ -2,12 +2,15 @@ package service
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 	"github.com/jspmarc/mockha/api/dao"
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/dto/http_mock"
 	"github.com/jspmarc/mockha/model"
 	"github.com/jspmarc/mockha/utils/mapper"
+	"github.com/mattn/go-sqlite3"
 )
 
 type HttpMockService struct {
@@ -24,18 +27,33 @@ func NewHttpMockService(mockDao dao.HttpMockDao, requestResponseDao dao.HttpRequ
 	return svc
 }
 
+type asd struct {
+}
+
+func (asd) Error() string {
+	return "hohohehe"
+}
+
 func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (*model.HttpMock, error) {
 	var err error
 
 	mock := mapper.CreateRequestToModelHttpMock(createRequest)
 	if mock, err = s.httpMockDao.Save(mock); err != nil {
-		return nil, err
+		var sqliteErr sqlite3.Error
+		switch {
+		case errors.As(err, &sqliteErr):
+			isConstraintError := sqliteErr.Code.Error() == "constraint failed"
+			fmt.Println(isConstraintError)
+			break
+		default:
+			return nil, err
+		}
 	}
 
-	rr := mapper.CreateRequestToModelHttpRequestResponse(createRequest, mock.Id)
-	if _, err = s.requestResponseDao.Save(rr); err != nil {
-		return nil, err
-	}
+	//rr := mapper.CreateRequestToModelHttpRequestResponse(createRequest, mock.Id)
+	//if _, err = s.requestResponseDao.Save(rr); err != nil {
+	//	return nil, err
+	//}
 
 	return mock, nil
 }

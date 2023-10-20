@@ -5,10 +5,11 @@ import (
 )
 
 type CreateRequest struct {
-	Group  *string
+	Group  string
 	Path   string
 	Method constants.HttpMethod
 
+	RequestHeader       *byte   `json:"requestHeader"`
 	RequestBody         *string `json:"requestBody"`
 	RequestBodyMimeType *string `json:"requestBodyMimeType"`
 

@@ -1,7 +1,6 @@
 package dao_test
 
 import (
-	"database/sql"
 	"errors"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
@@ -14,7 +13,7 @@ import (
 
 var (
 	httpMockData = model.HttpMock{
-		Group:  sql.NullString{String: "group", Valid: true},
+		Group:  "group",
 		Path:   "path",
 		Method: constants.HTTP_METHOD_GET,
 	}
@@ -126,10 +125,7 @@ func TestHttpMockDao_FindByGroup_success(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	group := sql.NullString{
-		String: "group",
-		Valid:  true,
-	}
+	group := "group"
 
 	rows := sqlmock.NewRows([]string{"id", "group", "path", "method"}).
 		AddRow(1, group, "", constants.HTTP_METHOD_GET)
@@ -158,10 +154,7 @@ func TestHttpMockDao_FindByGroup_error(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	group := sql.NullString{
-		String: "group",
-		Valid:  true,
-	}
+	group := "group"
 
 	mock.ExpectQuery(httpMockFindByGroupQuery).
 		WithArgs(group).
@@ -179,10 +172,7 @@ func TestHttpMockDao_FindAll_success(t *testing.T) {
 
 	daoInstance := dao.NewHttpMockDao(db)
 
-	group := sql.NullString{
-		String: "group",
-		Valid:  true,
-	}
+	group := "group"
 
 	rows := sqlmock.NewRows([]string{"id", "group", "path", "method"}).
 		AddRow(1, group, "", constants.HTTP_METHOD_GET)

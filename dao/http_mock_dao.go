@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/jspmarc/mockha/api/dao"
 	"github.com/jspmarc/mockha/model"
@@ -24,7 +23,7 @@ func (d *HttpMockDao) Save(mock *model.HttpMock) (*model.HttpMock, error) {
 
 	result, err := d.db.Exec(query, mock.Group, mock.Path, mock.Method)
 	if err != nil {
-		return nil, err
+		return mock, err
 	}
 	mock.Id, _ = result.LastInsertId()
 
@@ -53,7 +52,7 @@ func (d *HttpMockDao) DeleteById(id int64) error {
 	return nil
 }
 
-func (d *HttpMockDao) FindByGroup(group sql.NullString) ([]*model.HttpMock, error) {
+func (d *HttpMockDao) FindByGroup(group string) ([]*model.HttpMock, error) {
 	mocks := make([]*model.HttpMock, 0)
 
 	query := d.db.Rebind(`SELECT * FROM http_mock WHERE mock_group = ?`)
