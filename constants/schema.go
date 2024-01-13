@@ -19,12 +19,12 @@ CREATE TABLE http_request_response (
     
     http_mock_id INTEGER,
     
-	-- gob-encoded golang map
-	request_header BLOB,
+    -- gob-encoded golang map
+    request_header BLOB,
     request_body TEXT,
     request_body_mime_type TEXT,
 
-	-- gob-encoded golang map
+    -- gob-encoded golang map
     additional_response_header BLOB,
     response_body TEXT,
     response_body_mime_type TEXT,
