@@ -15,6 +15,6 @@ type HttpMockService interface {
 	DeleteMock(group sql.NullString, path string, method constants.HttpMethod) error
 	GetAllMocks() ([]*model.HttpMock, error)
 	GetMocksByGroup(group sql.NullString) ([]*model.HttpMock, error)
-	GetMock(group sql.NullString, path string, method constants.HttpMethod) (*model.HttpMock, error)
+	GetMock(group sql.NullString, path string, method constants.HttpMethod) (*http_mock.Response, error)
 	Stop() error
 }

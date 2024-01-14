@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"github.com/jspmarc/mockha/api/dao"
+	"github.com/jspmarc/mockha/api/repository"
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/dto/http_mock"
@@ -21,12 +21,12 @@ type httpMockServiceServer struct {
 }
 
 type HttpMockService struct {
-	httpMockDao        dao.HttpMockDao
-	requestResponseDao dao.HttpRequestResponseDao
+	httpMockDao        repository.HttpMockRepository
+	requestResponseDao repository.HttpRequestResponseRepository
 	server             httpMockServiceServer
 }
 
-func NewHttpMockService(mockDao dao.HttpMockDao, requestResponseDao dao.HttpRequestResponseDao, mockServerAddress string) service.HttpMockService {
+func NewHttpMockService(mockDao repository.HttpMockRepository, requestResponseDao repository.HttpRequestResponseRepository, mockServerAddress string) service.HttpMockService {
 	svc := &HttpMockService{}
 
 	mux := http.NewServeMux()
@@ -105,7 +105,7 @@ func (s *HttpMockService) GetMocksByGroup(group sql.NullString) ([]*model.HttpMo
 	return nil, nil
 }
 
-func (s *HttpMockService) GetMock(group sql.NullString, path string, method constants.HttpMethod) (*model.HttpMock, error) {
+func (s *HttpMockService) GetMock(group sql.NullString, path string, method constants.HttpMethod) (*http_mock.Response, error) {
 	return nil, nil
 }
 

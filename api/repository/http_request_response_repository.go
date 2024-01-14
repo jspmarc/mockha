@@ -1,11 +1,11 @@
-package dao
+package repository
 
 import (
 	"database/sql"
 	"github.com/jspmarc/mockha/model"
 )
 
-type HttpRequestResponseDao interface {
+type HttpRequestResponseRepository interface {
 	Save(reqres *model.HttpRequestResponse) (*model.HttpRequestResponse, error)
 	Update(reqres *model.HttpRequestResponse) (*model.HttpRequestResponse, error)
 	Delete(id int64) error

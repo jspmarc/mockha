@@ -3,11 +3,11 @@ package repository
 import (
 	"database/sql"
 	"github.com/jmoiron/sqlx"
-	"github.com/jspmarc/mockha/api/dao"
+	"github.com/jspmarc/mockha/api/repository"
 	"github.com/jspmarc/mockha/model"
 )
 
-func NewRequestResponseRepository(db *sqlx.DB) dao.HttpRequestResponseDao {
+func NewRequestResponseRepository(db *sqlx.DB) repository.HttpRequestResponseRepository {
 	requestResponseRepository := &HttpRequestResponsesRepository{}
 
 	requestResponseRepository.db = db

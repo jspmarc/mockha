@@ -2,11 +2,11 @@ package repository
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/jspmarc/mockha/api/dao"
+	"github.com/jspmarc/mockha/api/repository"
 	"github.com/jspmarc/mockha/model"
 )
 
-func NewHttpMockRepository(db *sqlx.DB) dao.HttpMockDao {
+func NewHttpMockRepository(db *sqlx.DB) repository.HttpMockRepository {
 	mockRepository := &HttpMockRepository{}
 
 	mockRepository.db = db
