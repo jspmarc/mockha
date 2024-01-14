@@ -1,4 +1,4 @@
-package dao
+package repository
 
 import (
 	"github.com/jmoiron/sqlx"
@@ -6,19 +6,19 @@ import (
 	"github.com/jspmarc/mockha/model"
 )
 
-func NewHttpMockDao(db *sqlx.DB) dao.HttpMockDao {
-	mockDao := &HttpMockDao{}
+func NewHttpMockRepository(db *sqlx.DB) dao.HttpMockDao {
+	mockRepository := &HttpMockRepository{}
 
-	mockDao.db = db
+	mockRepository.db = db
 
-	return mockDao
+	return mockRepository
 }
 
-type HttpMockDao struct {
+type HttpMockRepository struct {
 	db *sqlx.DB
 }
 
-func (d *HttpMockDao) Save(mock *model.HttpMock) (*model.HttpMock, error) {
+func (d *HttpMockRepository) Save(mock *model.HttpMock) (*model.HttpMock, error) {
 	query := d.db.Rebind("INSERT INTO http_mock (mock_group, path, method) VALUES (?, ?, ?) RETURNING id")
 
 	result, err := d.db.Exec(query, mock.Group, mock.Path, mock.Method)
@@ -30,7 +30,7 @@ func (d *HttpMockDao) Save(mock *model.HttpMock) (*model.HttpMock, error) {
 	return mock, nil
 }
 
-func (d *HttpMockDao) Update(mock *model.HttpMock) (*model.HttpMock, error) {
+func (d *HttpMockRepository) Update(mock *model.HttpMock) (*model.HttpMock, error) {
 	query := d.db.Rebind("UPDATE http_mock SET method = ?, mock_group = ?, path = ? WHERE id = ?")
 
 	_, err := d.db.Exec(query, mock.Group, mock.Path, mock.Method, mock.Id)
@@ -41,7 +41,7 @@ func (d *HttpMockDao) Update(mock *model.HttpMock) (*model.HttpMock, error) {
 	return mock, nil
 }
 
-func (d *HttpMockDao) DeleteById(id int64) error {
+func (d *HttpMockRepository) DeleteById(id int64) error {
 	query := d.db.Rebind("DELETE FROM http_mock WHERE id = ?")
 
 	_, err := d.db.Exec(query, id)
@@ -52,7 +52,7 @@ func (d *HttpMockDao) DeleteById(id int64) error {
 	return nil
 }
 
-func (d *HttpMockDao) FindByGroup(group string) ([]*model.HttpMock, error) {
+func (d *HttpMockRepository) FindByGroup(group string) ([]*model.HttpMock, error) {
 	mocks := make([]*model.HttpMock, 0)
 
 	query := d.db.Rebind(`SELECT * FROM http_mock WHERE mock_group = ?`)
@@ -64,7 +64,7 @@ func (d *HttpMockDao) FindByGroup(group string) ([]*model.HttpMock, error) {
 	return mocks, nil
 }
 
-func (d *HttpMockDao) FindAll() ([]*model.HttpMock, error) {
+func (d *HttpMockRepository) FindAll() ([]*model.HttpMock, error) {
 	mocks := make([]*model.HttpMock, 0)
 
 	err := d.db.Select(&mocks, "SELECT * FROM http_mock")

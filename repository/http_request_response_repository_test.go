@@ -1,11 +1,11 @@
-package dao_test
+package repository_test
 
 import (
 	"database/sql"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
-	"github.com/jspmarc/mockha/dao"
 	"github.com/jspmarc/mockha/model"
+	"github.com/jspmarc/mockha/repository"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -54,11 +54,11 @@ var (
 	httpRequestResponseFindForRequestQuery = "SELECT (.*) FROM http_request_response WHERE http_mock_id = (.+) AND request_body = (.)"
 )
 
-func TestHttpRequestResponsesDao_Save_success(t *testing.T) {
+func TestHttpRequestResponsesRepository_Save_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectExec(httpRequestResponseInsertQuery).
 		WithArgs(reqres.HttpMockId, reqres.RequestBody, reqres.RequestBodyMimeType, reqres.AdditionalResponseHeader,
@@ -73,11 +73,11 @@ func TestHttpRequestResponsesDao_Save_success(t *testing.T) {
 	assert.Equal(t, expected, *res)
 }
 
-func TestHttpRequestResponsesDao_Save_errorExec(t *testing.T) {
+func TestHttpRequestResponsesRepository_Save_errorExec(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectExec(httpRequestResponseInsertQuery).
 		WithArgs(
@@ -97,11 +97,11 @@ func TestHttpRequestResponsesDao_Save_errorExec(t *testing.T) {
 	assert.Nil(t, res)
 }
 
-func TestHttpRequestResponsesDao_Update_success(t *testing.T) {
+func TestHttpRequestResponsesRepository_Update_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectExec(httpRequestResponseUpdateQuery).
 		WithArgs(reqres.HttpMockId, reqres.RequestBody, reqres.RequestBodyMimeType, reqres.AdditionalResponseHeader,
@@ -114,11 +114,11 @@ func TestHttpRequestResponsesDao_Update_success(t *testing.T) {
 	assert.Equal(t, reqres, *res)
 }
 
-func TestHttpRequestResponsesDao_Update_errorExec(t *testing.T) {
+func TestHttpRequestResponsesRepository_Update_errorExec(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectExec(httpRequestResponseUpdateQuery).
 		WithArgs(
@@ -138,11 +138,11 @@ func TestHttpRequestResponsesDao_Update_errorExec(t *testing.T) {
 	assert.Nil(t, res)
 }
 
-func TestHttpRequestResponsesDao_Delete_success(t *testing.T) {
+func TestHttpRequestResponsesRepository_Delete_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectExec(httpRequestResponseDeleteQuery).
 		WithArgs(id).
@@ -153,11 +153,11 @@ func TestHttpRequestResponsesDao_Delete_success(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestHttpRequestResponsesDao_Delete_errorExec(t *testing.T) {
+func TestHttpRequestResponsesRepository_Delete_errorExec(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectExec(httpRequestResponseDeleteQuery).
 		WithArgs(id).
@@ -168,7 +168,7 @@ func TestHttpRequestResponsesDao_Delete_errorExec(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestHttpRequestResponsesDao_FindOneById_success(t *testing.T) {
+func TestHttpRequestResponsesRepository_FindOneById_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
@@ -199,7 +199,7 @@ func TestHttpRequestResponsesDao_FindOneById_success(t *testing.T) {
 			200,
 		)
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectQuery(httpRequestResponseFindByIdQuery).
 		WithArgs(id).
@@ -212,11 +212,11 @@ func TestHttpRequestResponsesDao_FindOneById_success(t *testing.T) {
 	assert.Equal(t, httpRequestResponseExpected, actual)
 }
 
-func TestHttpRequestResponsesDao_FindOneById_errorGet(t *testing.T) {
+func TestHttpRequestResponsesRepository_FindOneById_errorGet(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectQuery(httpRequestResponseFindByIdQuery).
 		WithArgs(id).
@@ -229,7 +229,7 @@ func TestHttpRequestResponsesDao_FindOneById_errorGet(t *testing.T) {
 	assert.Nil(t, actual)
 }
 
-func TestHttpRequestResponsesDao_FindOneForRequest_success(t *testing.T) {
+func TestHttpRequestResponsesRepository_FindOneForRequest_success(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
@@ -260,7 +260,7 @@ func TestHttpRequestResponsesDao_FindOneForRequest_success(t *testing.T) {
 			200,
 		)
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectQuery(httpRequestResponseFindForRequestQuery).
 		WithArgs(id, sql.NullString{}).
@@ -273,11 +273,11 @@ func TestHttpRequestResponsesDao_FindOneForRequest_success(t *testing.T) {
 	assert.Equal(t, httpRequestResponseExpected, actual)
 }
 
-func TestHttpRequestResponsesDao_FindOneForRequest_errorGet(t *testing.T) {
+func TestHttpRequestResponsesRepository_FindOneForRequest_errorGet(t *testing.T) {
 	mockDb, mock, _ := sqlmock.New()
 	db := sqlx.NewDb(mockDb, "sqlmock")
 
-	rrInstance := dao.NewRequestResponseDao(db)
+	rrInstance := repository.NewRequestResponseRepository(db)
 
 	mock.ExpectQuery(httpRequestResponseFindForRequestQuery).
 		WithArgs(id, sql.NullString{}).

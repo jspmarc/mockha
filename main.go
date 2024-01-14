@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/jspmarc/mockha/controllers"
-	"github.com/jspmarc/mockha/dao"
+	"github.com/jspmarc/mockha/repository"
 	"github.com/jspmarc/mockha/service"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -37,8 +37,8 @@ func main() {
 
 	db := sqlx.MustConnect("sqlite3", "mockha.sqlite")
 
-	mockDao := dao.NewHttpMockDao(db)
-	requestResponseDao := dao.NewRequestResponseDao(db)
+	mockDao := repository.NewHttpMockRepository(db)
+	requestResponseDao := repository.NewRequestResponseRepository(db)
 
 	httpMockService := service.NewHttpMockService(mockDao, requestResponseDao, ":8081")
 
