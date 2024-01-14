@@ -8,6 +8,7 @@ import (
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/dto/http_mock"
+	"github.com/jspmarc/mockha/entities"
 	"github.com/jspmarc/mockha/model"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -63,12 +64,13 @@ func (s *HttpMockService) Start() error {
 	return nil
 }
 
-func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (*http_mock.Response, error) {
+func (s *HttpMockService) RegisterMock(headers *entities.Headers, createRequest *http_mock.CreateRequest) (*http_mock.Response, error) {
 	var err error
 
 	mock := createRequest.ToModelHttpMock()
 	if mock, err = s.httpMockDao.Save(mock); err != nil {
 		log.Error().
+			Str("requestId", headers.RequestId).
 			Err(err).
 			Msg("Got error when saving mock to DB")
 		return nil, err
@@ -78,6 +80,11 @@ func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (
 	if _, err = s.requestResponseDao.Save(rr); err != nil {
 		return nil, err
 	}
+
+	log.Info().
+		Str("requestId", headers.RequestId).
+		Int64("mockId", mock.Id).
+		Msg("Successfully created a new mock")
 
 	return http_mock.NewHttpMockResponse(mock, rr), nil
 }
