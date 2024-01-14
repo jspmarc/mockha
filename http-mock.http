@@ -1,2 +1,18 @@
-### Mock HTTP Request
-GET http://localhost:8081/
+### Register mock (add new mock)
+POST localhost:8080/http-mocks/
+Content-Type: application/json; charset=UTF-8
+
+{
+  "group": "test",
+  "path": "/",
+  "method": "GET",
+
+  "requestHeader": null,
+  "requestBody": null,
+  "requestBodyMimeType": null,
+
+  "additionalResponseHeader": null,
+  "responseBody": null,
+  "responseBodyMimeType": null,
+  "responseCode": 200
+}

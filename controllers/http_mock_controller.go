@@ -9,6 +9,7 @@ import (
 	"github.com/jspmarc/mockha/model"
 	"github.com/jspmarc/mockha/utils"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
@@ -16,7 +17,7 @@ type HttpMockController struct {
 	httpMockService service.HttpMockService
 }
 
-func NewMockController(e *echo.Echo, mockService service.HttpMockService, prefix string) *HttpMockController {
+func NewHttpMockController(e *echo.Echo, mockService service.HttpMockService, prefix string) *HttpMockController {
 	c := new(HttpMockController)
 	c.httpMockService = mockService
 
@@ -34,7 +35,7 @@ func (c *HttpMockController) Start() error {
 }
 
 func (c *HttpMockController) registerMock(ctx echo.Context) error {
-	ctx.Logger().Printf("called registerMock with path %s\n", ctx.Path())
+	log.Info().Msgf("called registerMock with path %s", ctx.Path())
 
 	var req http_mock.CreateRequest
 	if err := ctx.Bind(&req); err != nil {

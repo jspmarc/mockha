@@ -4,14 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/jspmarc/mockha/api/dao"
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/dto/http_mock"
 	"github.com/jspmarc/mockha/model"
 	"github.com/jspmarc/mockha/utils/mapper"
-	"github.com/mattn/go-sqlite3"
 	"github.com/rs/zerolog/log"
 	"net/http"
 	"sync"
@@ -71,21 +69,16 @@ func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (
 
 	mock := mapper.CreateRequestToModelHttpMock(createRequest)
 	if mock, err = s.httpMockDao.Save(mock); err != nil {
-		var sqliteErr sqlite3.Error
-		switch {
-		case errors.As(err, &sqliteErr):
-			isConstraintError := sqliteErr.Code.Error() == "constraint failed"
-			fmt.Println(isConstraintError)
-			break
-		default:
-			return nil, err
-		}
+		log.Error().
+			Err(err).
+			Msg("Got error when saving mock to DB")
+		return nil, err
 	}
 
-	//rr := mapper.CreateRequestToModelHttpRequestResponse(createRequest, mock.Id)
-	//if _, err = s.requestResponseDao.Save(rr); err != nil {
-	//	return nil, err
-	//}
+	rr := mapper.CreateRequestToModelHttpRequestResponse(createRequest, mock.Id)
+	if _, err = s.requestResponseDao.Save(rr); err != nil {
+		return nil, err
+	}
 
 	return mock, nil
 }

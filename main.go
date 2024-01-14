@@ -34,14 +34,14 @@ func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	e := echo.New()
 
-	db := sqlx.MustConnect("sqlite3", "mocks.sqlite")
+	db := sqlx.MustConnect("sqlite3", "mockha.sqlite")
 
 	mockDao := dao.NewHttpMockDao(db)
 	requestResponseDao := dao.NewRequestResponseDao(db)
 
 	httpMockService := service.NewHttpMockService(mockDao, requestResponseDao, ":8081")
 
-	httpMockController := controllers.NewMockController(e, httpMockService, "http-mocks")
+	httpMockController := controllers.NewHttpMockController(e, httpMockService, "http-mocks")
 
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:    true,
@@ -64,6 +64,5 @@ func main() {
 			Msg("Unable to start mock controller")
 	}
 
-	log.Fatal().
-		Err(e.Start(":8080"))
+	log.Fatal().Err(e.Start(":8080"))
 }
