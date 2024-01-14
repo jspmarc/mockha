@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
-	"log"
+	"github.com/rs/zerolog/log"
 	"os"
 	"os/signal"
 )
@@ -19,10 +19,12 @@ func interruptHandler(httpMockController *controllers.HttpMockController) {
 	<-sigchan
 
 	if err := httpMockController.Stop(); err != nil {
-		log.Println("Unable to stop mock controller", err)
+		log.Error().
+			Err(err).
+			Msg("Unable to stop mock controller")
 	}
 
-	log.Println("Stopped")
+	log.Info().Msg("Stopped")
 
 	os.Exit(0)
 }
@@ -39,7 +41,18 @@ func main() {
 
 	httpMockController := controllers.NewMockController(e, httpMockService, "http-mocks")
 
-	e.Use(middleware.Logger())
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogURI:    true,
+		LogStatus: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			log.Info().
+				Str("URI", v.URI).
+				Int("status", v.Status).
+				Msg("request")
+
+			return nil
+		},
+	}))
 	e.Use(middleware.Recover())
 
 	go interruptHandler(httpMockController)
