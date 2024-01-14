@@ -23,7 +23,7 @@ func (d *HttpMockDao) Save(mock *model.HttpMock) (*model.HttpMock, error) {
 
 	result, err := d.db.Exec(query, mock.Group, mock.Path, mock.Method)
 	if err != nil {
-		return mock, err
+		return nil, err
 	}
 	mock.Id, _ = result.LastInsertId()
 
