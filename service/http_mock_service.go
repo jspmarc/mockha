@@ -9,7 +9,6 @@ import (
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/dto/http_mock"
 	"github.com/jspmarc/mockha/model"
-	"github.com/jspmarc/mockha/utils/mapper"
 	"github.com/rs/zerolog/log"
 	"net/http"
 	"sync"
@@ -67,7 +66,7 @@ func (s *HttpMockService) Start() error {
 func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (*http_mock.Response, error) {
 	var err error
 
-	mock := mapper.CreateRequestToModelHttpMock(createRequest)
+	mock := createRequest.ToModelHttpMock()
 	if mock, err = s.httpMockDao.Save(mock); err != nil {
 		log.Error().
 			Err(err).
@@ -75,7 +74,7 @@ func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (
 		return nil, err
 	}
 
-	rr := mapper.CreateRequestToModelHttpRequestResponse(createRequest, mock.Id)
+	rr := createRequest.ToCreateRequestToModelHttpRequestResponse(mock.Id)
 	if _, err = s.requestResponseDao.Save(rr); err != nil {
 		return nil, err
 	}
