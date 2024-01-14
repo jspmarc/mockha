@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"os"
 	"os/signal"
@@ -30,6 +31,7 @@ func interruptHandler(httpMockController *controllers.HttpMockController) {
 }
 
 func main() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	e := echo.New()
 
 	db := sqlx.MustConnect("sqlite3", "mocks.sqlite")
@@ -37,7 +39,7 @@ func main() {
 	mockDao := dao.NewHttpMockDao(db)
 	requestResponseDao := dao.NewRequestResponseDao(db)
 
-	httpMockService := service.NewHttpMockService(mockDao, requestResponseDao)
+	httpMockService := service.NewHttpMockService(mockDao, requestResponseDao, ":8081")
 
 	httpMockController := controllers.NewMockController(e, httpMockService, "http-mocks")
 
@@ -56,6 +58,12 @@ func main() {
 	e.Use(middleware.Recover())
 
 	go interruptHandler(httpMockController)
+	if err := httpMockController.Start(); err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("Unable to start mock controller")
+	}
 
-	e.Logger.Fatal(e.Start(":8080"))
+	log.Fatal().
+		Err(e.Start(":8080"))
 }

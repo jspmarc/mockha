@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -11,27 +12,58 @@ import (
 	"github.com/jspmarc/mockha/model"
 	"github.com/jspmarc/mockha/utils/mapper"
 	"github.com/mattn/go-sqlite3"
+	"github.com/rs/zerolog/log"
+	"net/http"
+	"sync"
 )
+
+type httpMockServiceServer struct {
+	srv *http.Server
+	wg  *sync.WaitGroup
+}
 
 type HttpMockService struct {
 	httpMockDao        dao.HttpMockDao
 	requestResponseDao dao.HttpRequestResponseDao
+	server             httpMockServiceServer
 }
 
-func NewHttpMockService(mockDao dao.HttpMockDao, requestResponseDao dao.HttpRequestResponseDao) service.HttpMockService {
+func NewHttpMockService(mockDao dao.HttpMockDao, requestResponseDao dao.HttpRequestResponseDao, mockServerAddress string) service.HttpMockService {
 	svc := &HttpMockService{}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", executeMock)
+
+	srv := &http.Server{Addr: mockServerAddress, Handler: mux}
+	wg := &sync.WaitGroup{}
 
 	svc.httpMockDao = mockDao
 	svc.requestResponseDao = requestResponseDao
+	svc.server = httpMockServiceServer{srv, wg}
 
 	return svc
 }
 
-type asd struct {
-}
+func (s *HttpMockService) Start() error {
+	server := s.server
 
-func (asd) Error() string {
-	return "hohohehe"
+	srv := server.srv
+	wg := server.wg
+
+	go func() {
+		defer wg.Done()
+
+		log.Info().Msgf("Starting mock HTTP server on %s", srv.Addr)
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal().
+				Err(err).
+				Msg("Unable to start HTTP mock server")
+		}
+	}()
+
+	wg.Add(1)
+
+	return nil
 }
 
 func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (*model.HttpMock, error) {
@@ -78,6 +110,19 @@ func (s *HttpMockService) GetMock(group sql.NullString, path string, method cons
 	return nil, nil
 }
 
-func (s *HttpMockService) ExecuteMock(group sql.NullString, path string, method constants.HttpMethod) (interface{}, error) {
-	return nil, nil
+func (s *HttpMockService) Stop() error {
+	server := s.server
+
+	if err := server.srv.Shutdown(context.Background()); err != nil {
+		return err
+	}
+	server.wg.Wait()
+
+	return nil
+}
+
+func executeMock(w http.ResponseWriter, r *http.Request) {
+	log.Info().
+		Msg("Got mock HTTP request")
+	w.Write([]byte("hello, world"))
 }

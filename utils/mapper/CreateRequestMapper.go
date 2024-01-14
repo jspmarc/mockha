@@ -1,28 +1,14 @@
 package mapper
 
 import (
-	"database/sql"
 	"github.com/jspmarc/mockha/dto/http_mock"
 	"github.com/jspmarc/mockha/model"
 	"github.com/jspmarc/mockha/utils"
-	"regexp"
 )
 
 func CreateRequestToModelHttpMock(createRequest *http_mock.CreateRequest) *model.HttpMock {
-	var group string
-	if createRequest.Group != nil {
-		group = *createRequest.Group
-	} else {
-		group = ""
-	}
-
-	isGroupEmpty, _ := regexp.MatchString(`(\s+|)`, group)
-
 	mock := &model.HttpMock{
-		Group: sql.NullString{
-			String: group,
-			Valid:  isGroupEmpty,
-		},
+		Group:  createRequest.Group,
 		Path:   createRequest.Path,
 		Method: createRequest.Method,
 	}

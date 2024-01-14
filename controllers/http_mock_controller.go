@@ -25,10 +25,12 @@ func NewMockController(e *echo.Echo, mockService service.HttpMockService, prefix
 	group.PUT("/:id", c.editMock)
 	group.DELETE("/:id", c.deleteMock)
 	group.GET("/", c.getMocks)
-	group.POST("/:id/execute", c.executeMock)
-	group.POST("/execute", c.executeMock)
 
 	return c
+}
+
+func (c *HttpMockController) Start() error {
+	return c.httpMockService.Start()
 }
 
 func (c *HttpMockController) registerMock(ctx echo.Context) error {
@@ -87,12 +89,6 @@ func (c *HttpMockController) getMocks(ctx echo.Context) error {
 	return ctx.String(http.StatusOK, fmt.Sprintf("called getMock with path %s", ctx.Path()))
 }
 
-func (c *HttpMockController) executeMock(ctx echo.Context) error {
-	ctx.Logger().Printf("called getMock with path %s\n", ctx.Path())
-	c.httpMockService.ExecuteMock(sql.NullString{String: "", Valid: true}, "", constants.HTTP_METHOD_GET)
-	return ctx.String(http.StatusOK, fmt.Sprintf("called getMock with path %s", ctx.Path()))
-}
-
 func (c *HttpMockController) Stop() error {
-	return nil
+	return c.httpMockService.Stop()
 }
