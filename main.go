@@ -55,6 +55,8 @@ func main() {
 			return nil
 		},
 	}))
+	e.Use(middleware.Gzip())
+	e.Use(middleware.RequestID())
 	e.Use(middleware.Recover())
 
 	go interruptHandler(httpMockController)

@@ -68,7 +68,7 @@ func (c *HttpMockController) registerMock(ctx echo.Context) error {
 		errMsg := err.Error()
 		return utils.ResponseHttp(ctx, http.StatusInternalServerError, &errMsg, nil)
 	} else {
-		return utils.ResponseHttp(ctx, http.StatusOK, nil, mock)
+		return utils.ResponseHttp(ctx, http.StatusCreated, nil, mock)
 	}
 }
 

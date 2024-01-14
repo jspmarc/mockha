@@ -109,6 +109,7 @@ func (s *HttpMockService) Stop() error {
 	if err := server.srv.Shutdown(context.Background()); err != nil {
 		return err
 	}
+	log.Info().Msg("Mock HTTP server stopped")
 	server.wg.Wait()
 
 	return nil
