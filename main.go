@@ -1,13 +1,12 @@
 package main
 
 import (
-	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/jspmarc/mockha/controllers"
 	"github.com/jspmarc/mockha/repository"
 	"github.com/jspmarc/mockha/service"
+	"github.com/jspmarc/mockha/utils"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -44,32 +43,7 @@ func main() {
 
 	httpMockController := controllers.NewHttpMockController(e, httpMockService, "http-mocks")
 
-	e.Use(middleware.Recover())
-	e.Use(middleware.Gzip())
-	e.Use(middleware.RequestID())
-	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			c.Request().Header.Set(echo.HeaderXRequestID, uuid.NewString())
-			return next(c)
-		}
-	})
-	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
-		HandleError:  true,
-		LogURI:       true,
-		LogStatus:    true,
-		LogMethod:    true,
-		LogRequestID: true,
-		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-			log.Info().
-				Str("requestId", v.RequestID).
-				Str("Uri", v.URI).
-				Str("method", v.Method).
-				Int("status", v.Status).
-				Msg("Finished request")
-
-			return nil
-		},
-	}))
+	utils.SetupEchoMiddlewares(e)
 
 	go interruptHandler(httpMockController)
 	if err := httpMockController.Start(); err != nil {

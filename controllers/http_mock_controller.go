@@ -6,6 +6,7 @@ import (
 	"github.com/jspmarc/mockha/api/service"
 	"github.com/jspmarc/mockha/constants"
 	"github.com/jspmarc/mockha/dto/http_mock"
+	"github.com/jspmarc/mockha/entities"
 	"github.com/jspmarc/mockha/model"
 	"github.com/jspmarc/mockha/utils"
 	"github.com/labstack/echo/v4"
@@ -35,8 +36,10 @@ func (c *HttpMockController) Start() error {
 }
 
 func (c *HttpMockController) registerMock(ctx echo.Context) error {
+	headers := ctx.(entities.CustomContext).Headers
+
 	log.Info().
-		Str("requestId", ctx.Request().Header.Get(echo.HeaderXRequestID)).
+		Str("requestId", headers.RequestId).
 		Msgf("called registerMock with path %s", ctx.Path())
 
 	var req http_mock.CreateRequest
