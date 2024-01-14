@@ -3,7 +3,7 @@ POST localhost:8080/http-mocks/
 Content-Type: application/json; charset=UTF-8
 
 {
-  "group": "test4",
+  "group": "test26",
   "path": "/",
   "method": "GET",
 

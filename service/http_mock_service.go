@@ -64,7 +64,7 @@ func (s *HttpMockService) Start() error {
 	return nil
 }
 
-func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (*model.HttpMock, error) {
+func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (*http_mock.Response, error) {
 	var err error
 
 	mock := mapper.CreateRequestToModelHttpMock(createRequest)
@@ -80,7 +80,7 @@ func (s *HttpMockService) RegisterMock(createRequest *http_mock.CreateRequest) (
 		return nil, err
 	}
 
-	return mock, nil
+	return http_mock.NewHttpMockResponse(mock, rr), nil
 }
 
 func (s *HttpMockService) EditMock(mock *model.HttpMock) (*model.HttpMock, error) {

@@ -35,7 +35,9 @@ func (c *HttpMockController) Start() error {
 }
 
 func (c *HttpMockController) registerMock(ctx echo.Context) error {
-	log.Info().Msgf("called registerMock with path %s", ctx.Path())
+	log.Info().
+		Str("requestId", ctx.Request().Header.Get(echo.HeaderXRequestID)).
+		Msgf("called registerMock with path %s", ctx.Path())
 
 	var req http_mock.CreateRequest
 	if err := ctx.Bind(&req); err != nil {

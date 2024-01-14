@@ -5,7 +5,7 @@ import (
 )
 
 type HttpMock struct {
-	Id int64
+	Id int64 `json:"id"`
 
 	Group  string               `json:"group"`
 	Path   string               `json:"path"`

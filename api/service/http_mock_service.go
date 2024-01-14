@@ -9,7 +9,7 @@ import (
 
 type HttpMockService interface {
 	Start() error
-	RegisterMock(createRequest *http_mock.CreateRequest) (*model.HttpMock, error)
+	RegisterMock(createRequest *http_mock.CreateRequest) (*http_mock.Response, error)
 	EditMock(mock *model.HttpMock) (*model.HttpMock, error)
 	DeleteMock(group sql.NullString, path string, method constants.HttpMethod) error
 	GetAllMocks() ([]*model.HttpMock, error)
